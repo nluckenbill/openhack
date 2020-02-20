@@ -77,3 +77,111 @@ spec:
     targetPort: 8080
   selector:
     app: user-java
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registrywja0606.azurecr.io/tripinsights/trips:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: OPENAPI_DOCS_URI
+          value: "http://changeme"
+        envFrom:
+        - secretRef:
+            name: db-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: trips
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+      - name: userprofile
+        image: registrywja0606.azurecr.io/tripinsights/userprofile:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        envFrom:
+        - secretRef:
+            name: db-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: userprofile
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripviewer
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+    spec:
+      containers:
+      - name: tripviewer
+        image: registrywja0606.azurecr.io/tripinsights/tripviewer:1.0
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: tripviewer

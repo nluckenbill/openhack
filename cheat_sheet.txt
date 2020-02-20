@@ -1,0 +1,122 @@
+#cheatsheet
+#https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+# Install kubectl
+az aks install-cli
+
+# Connect to AKS cluster
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+
+# Get ACR login server (for images)
+az acr list --resource-group myResourceGroup --query "[].{acrLoginServer:loginServer}" --output table
+
+# add autocomplete permanently to your bash shell
+echo "source <(kubectl completion bash)" >> ~/.bashrc 
+
+# Get cluster information
+k config current-context
+k cluster-info
+
+# Get nodes and by label
+k get nodes
+k get node -l node=aks0
+
+# Display Resource (CPU/Mem/Storage) usage of nodes
+k top nodes
+
+# get shortnames for resources
+k api-resources
+
+# Get pods
+k get pods
+k get pods --all-namespaces
+k get pods -n kube-system
+k get ns
+
+#Run bash in container
+k exec -it nginx bash
+
+# Describe pods
+k describe pod nginx
+
+# Get Logs
+k logs nginx
+
+#look for keywords "denied" and see how many times user "foo" failed to access the pod nginx
+k logs nginx | grep -e "denied" -e "foo" | wc -l
+
+#Find all occurances of the word "failed" in the nginx pod logs and save to /srv/logs/failed.logs.txt
+k logs nginx | grep Failed /srv/logs/failedlogs.txt
+
+#find all lines starting with "Error" for the pod busybox and save it to /srv/logs/errorlogs.txt
+k logs busybox | grep "^Error" > /srv/logs/errorlogs.txt
+
+# Get services status - name,type, ip, ports, etc
+k get service
+k get svc -o wide
+
+#find out which pod is assigned to which node
+k get pods -o wide
+
+#Scale web deployment to 5 replicas
+k get deploy
+k scale --replicas=1 deployments/frontend
+k get pods -o wide --sort-by=.metadata.creationTimestamp
+
+#Uncordon node 0
+k Uncordon prommetrics-demo-7cc7766d5-6c257
+
+k get nodes
+
+# Drain a specific node, this will evict pods and move them to a differnt node.  Pods which are not part of replica set are not moved or evicted
+k drain aks-nodepool1-13386004-vmss000000 --force --delete-local-data --ignore-daemonsets
+k get nodes
+k uncordon aks-nodepool1-13386004-vmss000000
+
+#copy a file inside a pod
+#create a new file
+vi test.html
+<html>
+<head>
+<title> Demo Page </title>
+</head>
+<h1> Demo page </h1>
+</html>
+
+k cp ./test.html nginx:/tmp/test.html
+
+#get YAML/JSON definition of a pod
+k get pods nginx -o=yaml
+k get pods nginx -o=json
+
+#get name of containers in a pod and the image used
+k get pods nginx -o jsonpath={.spec.containers[*].name}
+k get pods nginx -o jsonpath={.spec.containers[*].image}
+
+#edit a running object
+k get deployments
+k edit deploy/captureorder
+
+#get Endpoints from Service
+k get ep nginx-clusterip
+
+# scale out cluster
+az ask scale -g kube-demo -name myaksdemo --node-count 4
+
+# scale out cluster
+az aks scale -g kube-demo -name myaksdemo --node-count 4
+
+# scale out cluster
+az aks get-versions -l westus --output table
+
+#Upgrage AKS
+az aks upgrade -g kube-demo -name myaksdemo --kubernetes-version 1.17
+
+# get events from a deployment
+k get events --namespace dev
+
+#run curl in a loop - nginx containers
+for (( counter=10; counter>0 counter--))
+do
+curl 10.0.219.132
+done 

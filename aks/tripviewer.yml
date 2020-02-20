@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poi
+  template:
+    metadata:
+      labels:
+        app: poi
+    spec:
+      containers:
+      - name: poi
+        image: registrywja0606.azurecr.io/tripinsights/poi:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: WEB_PORT
+          value: "8080"
+        - name: WEB_SERVER_BASE_URI
+          value: "http://0.0.0.0"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Development
+        - name: CONFIG_FILES_PATH
+          value: "/secrets"
+        envFrom:
+        - secretRef:
+            name: db-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: poi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      containers:
+      - name: user-java
+        image: registrywja0606.azurecr.io/tripinsights/user-java:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        envFrom:
+        - secretRef:
+            name: db-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: user-java

@@ -1,0 +1,96 @@
+  36 kubectl apply -f .\example.yml
+  37 kubectl apply -f .\example.yml
+  38 kubectl apply -f .\example.yml
+  39 kubectl apply -f .\example.yml
+  40 kubectl apply -f .\example.yml
+  41 git pods
+  42 get pods
+  43 kubectl get pods
+  44 kubectl logs -h
+  45 kubectl get pods
+  46 kubectl describe pod poi-cbf8858c9-66rtc
+ az aks update -g teamresources -n tripviewer --attach-acr registrywja0606
+
+ 2006  kubectl create secret generic db-secrets --from-literal=SQL_USER="sqlserverwja0606" --from-literal=SQL_PASSWORD="gH75e1Md2" --from-literal=SQL_SERVER="sqlserverwja0606.database.windows.net" --from-literal=SQL_DBNAME="mydrivingDB"
+ 2007  kubectl apply -f example.yml
+ 2008  kubectl exec poi-cbf8858c9-66rtc -it -- sh -il
+ 2009  kubectl get pod
+ 2010  kubectl exec poi-668657cbd5-knp84 -it -- sh -il
+ 2011  kubectl create secret generic db-secrets --from-literal=SQL_USER="sqladminwJa0606" --from-literal=SQL_PASSWORD="gH75e1Md2" --from-literal=SQL_SERVER="sqlserverwja0606.database.windows.net" --from-literal=SQL_DBNAME="mydrivingDB"
+ 2012  kubectl apply -f example.yml
+ 2013* kubectl -
+ 2014  kubectl replace -f example.yml
+ 2015  kubectl exec poi-668657cbd5-knp84 -it -- sh -il
+ 2016  kubectl get pods
+ 2017  kubectl replace -f example.yml
+ 2018  kubectl delete poi-668657cbd5-knp84
+ 2019  kubectl delete -h
+ 2020  kubectl get pod
+ 2021  kubectl delete -f example.yml
+ 2022  kubectl create -f example.yml
+ 2023  kubectl get pod
+ 2024  kubectl exec poi-668657cbd5-9d9c4 -it -- sh -il
+ 2025  kubectl get pod
+ 2026  kubectl exec poi-78f95849b7-lpprs -it -- sh -il
+ 2027  az aks images list
+ 2028  az aks image list
+ 2029  az aks -h
+ 2030  az aks list
+ 2031  az aks list -o table
+ 2032  kubectl apply -f example.yml
+ 2033  kubectl get pods
+ 2034  kubect get svc
+ 2035  kubectl get svc
+ 2036  kubectl get pods
+ 2037  kubectl exec user-java-896fd659-pgvtw -it -- sh -il
+ 2038  kubectl exec user-java-896fd659-pgvtw -it -- bash -il
+
+
+
+Getting Ready for Orchestration
+Containers are extremely useful on their own, but their flexibility and potential is multiplied when deployed to an orchestrator. Some of the advantages of deploying your containers to an orchestrator include:
+• Deployment reliability
+• Scaling on demand
+• Better resource utilization and application density
+Before getting into the details of what it takes to bring a cluster to production, your CTO would like you to first do a spike to validate your application can be deployed in a Kubernetes environment.
+Challenge
+At this point, you've built the images for the components of your application and made those images available in your private ACR. Your team's goal in this challenge is to deploy your application to a test Azure Kubernetes Service (AKS) cluster in your Azure subscription.
+Focus on making sure your containers are all up and can communicate and reach the necessary Azure services. In particular:
+• tripviewer needs to be able to access the trips and userprofile services
+Note: The Swagger API Documentation links on the homepage of tripviewer will not work at this time. You will add this functionality in a later challenge.
+• Your POI and User (Java) APIs must be reachable (even though they are not accessed by the Trip Viewer application at this stage). Refer to the application documentation for ways to test the endpoints.
+Note: There's no need to give each API an external IP.
+• All APIs must be able to access the SQL database provided in your Azure subscription. Connection details can be found in the Messages tab of your OpenHack portal.
+Desired Architecture
+DesiredArchChallenge2.png
+Services will all run in the kubernetes cluster with the TripViewer application making calls to the APIs to get data. Data is stored on an Azure SQL Server which is accessed by the APIs.
+Success Criteria
+• Your team successfully created an AKS cluster in Azure
+• Your team must demonstrate that at least one pod for each component of the TripInsights application is running
+• Your team must demonstrate that the components in your cluster can connect to other components or resources:
+• tripviewer is able to access the trips and userprofile services
+• All APIs are able to access the SQL database provided in your Azure subscription
+• The POI and User (Java) APIs are reachable from the TripViewer web app top links (but the APIs do not have to be accessible from outside the AKS cluster)
+References
+Kubernetes:
+• Kubernetes core concepts
+• Kubernetes services
+• Kubernetes DNS for services and pods
+• Kubernetes Port Forwarding
+• Kubernetes External Load Balancers
+• Kubectl overview
+Azure Kubernetes Service (AKS)
+• Deploy an AKS cluster using Azure CLI
+• Azure CLI: az aks create
+• Deploy an AKS cluster using the Azure portal
+Azure Container Registry (ACR)
+• Authenticate with ACR from AKS
+Azure
+• Azure CLI reference
+• Resource naming conventions
+OpenHack © Microsoft 2019. All Rights Reserved - Powered By Opsgility Cloud Sandbox
+
+From <https://openhack.skillmeup.com/labs/player/microsoft-open-hack-containers-v2_2d85a605ca87_3_0> 
+
+
+

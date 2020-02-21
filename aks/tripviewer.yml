@@ -79,6 +79,10 @@ spec:
       containers:
       - name: user-java
         image: registrywja0606.azurecr.io/tripinsights/user-java:1.0
+        volumeMounts:
+        - name: secrets
+          mountPath: /kvmnt
+          readOnly: true
         ports:
         - containerPort: 8080
         env:
@@ -134,6 +138,10 @@ spec:
       containers:
       - name: trips
         image: registrywja0606.azurecr.io/tripinsights/trips:1.0
+        volumeMounts:
+        - name: secrets
+          mountPath: /kvmnt
+          readOnly: true
         ports:
         - containerPort: 8080
         env:
@@ -191,6 +199,10 @@ spec:
       containers:
       - name: userprofile
         image: registrywja0606.azurecr.io/tripinsights/userprofile:1.0
+        volumeMounts:
+        - name: secrets
+          mountPath: /kvmnt
+          readOnly: true
         ports:
         - containerPort: 8080
         env:
@@ -248,6 +260,12 @@ spec:
         image: registrywja0606.azurecr.io/tripinsights/tripviewer:1.0
         ports:
         - containerPort: 80
+        env:
+        - name: USERPROFILE_API_ENDPOINT
+          value: "http://userprofile.api"
+        - name: TRIPS_API_ENDPOINT
+          value: "http://trips.api"
+
 ---
 apiVersion: v1
 kind: Service

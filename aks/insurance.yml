@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: insurance-deployment
+  namespace: api
   labels:
     deploy: insurance
 spec:
@@ -15,18 +16,26 @@ spec:
         app: insurance
     spec:
       containers:
-      - image: "replaceme.io/insurance:1.0"
+      - image: "registrywja0606.azurecr.io/insurance:1.0"
         imagePullPolicy: Always
         name: insurance
         ports:
         - containerPort: 8081
           name: http
           protocol: TCP
+        resources: 
+          requests: 
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "100000Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: insurance
+  namespace: api
 spec:
   type: ClusterIP
   selector:

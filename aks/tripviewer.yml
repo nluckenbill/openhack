@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
       - name: poi
-        image: registrywja0606.azurecr.io/tripinsights/poi:1.0
+        image: "registrywja0606.azurecr.io/tripinsights/poi:1.0"
+        volumeMounts:
+        - name: secrets
+          mountPath: /kvmnt
+          readOnly: true
         ports:
         - containerPort: 8080
         env:
@@ -25,11 +29,23 @@ spec:
           value: "http://0.0.0.0"
         - name: ASPNETCORE_ENVIRONMENT
           value: Development
-        - name: CONFIG_FILES_PATH
-          value: "/secrets"
-        envFrom:
-        - secretRef:
-            name: db-secrets
+      volumes:
+      - name: secrets
+        flexVolume:
+          driver: "azure/kv"
+          secretRef:
+            name: kvcreds                             # [OPTIONAL] not required if using Pod Identity
+          options:
+            usepodidentity: "false"                   # [OPTIONAL] if not provided, will default to "false"
+            usevmmanagedidentity: "false"             # [OPTIONAL new in version >= v0.0.15] if not provided, will default to "false"
+            vmmanagedidentityclientid: "clientid"     # [OPTIONAL new in version >= v0.0.15] use the client id to specify which user assigned managed identity to use, leave empty to use system assigned managed identity
+            keyvaultname: "rbac-aks-kv"              # [REQUIRED] the name of the KeyVault
+            keyvaultobjectnames: "SQL-USER;SQL-PASSWORD;SQL-SERVER;SQL-DBNAME"         # [REQUIRED] list of KeyVault object names (semi-colon separated)
+            keyvaultobjectaliases: "SQL_USER;SQL_PASSWORD;SQL_SERVER;SQL_DBNAME"      # [OPTIONAL] list of KeyVault object aliases
+            keyvaultobjecttypes: "secret;secret;secret;secret"               # [REQUIRED] list of KeyVault object types: secret, key, cert
+            resourcegroup: "teamResources"        # [REQUIRED for version < v0.0.14] the resource group of the KeyVault
+            subscriptionid: "05ee0654-5f89-4783-b11a-39860a372718"                 # [REQUIRED for version < v0.0.14] the subscription ID of the KeyVault
+            tenantid: "500cf2dc-1450-4b7d-a759-c5a1ebe1308f"                    # [REQUIRED] the tenant ID of the KeyVault
 ---
 apiVersion: v1
 kind: Service

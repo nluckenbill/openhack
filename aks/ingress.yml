@@ -26,6 +26,10 @@ spec:
           serviceName: trips
           servicePort: 80
         path: /api/trips
+      - backend:
+          serviceName: insurance
+          servicePort: 80
+        path: /insurance
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
